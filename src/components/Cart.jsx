@@ -11,7 +11,18 @@ export default function Cart() {
             return (
               <tr className="border-b dark:border-gray-700" key={item.id}>
                 <td className="px-6 py-4">
-                  <a href="#">X</a>
+                  <button
+                    type="button"
+                    className="px-2.5 py-2.5 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                    onClick={() => {
+                      dispatch({
+                        type: "REMOVE_CART_ITEM",
+                        payload: { ...item },
+                      });
+                    }}
+                  >
+                    X
+                  </button>
                 </td>
                 <td>
                   <img
@@ -29,12 +40,23 @@ export default function Cart() {
                   <select
                     id="countries"
                     className="block w-full border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                    value={item.quantity}
+                    onChange={(e) => {
+                      e.preventDefault();
+                      const quantity = parseInt(e.target.value);
+                      dispatch({
+                        type: "CHANGE_CART_QUANTITY",
+                        payload: { ...item, quantity },
+                      });
+                    }}
                   >
-                    <option>Choose a country</option>
-                    <option defaultValue="US">United States</option>
-                    <option defaultValue="CA">Canada</option>
-                    <option defaultValue="FR">France</option>
-                    <option defaultValue="DE">Germany</option>
+                    {[...Array(20)].map((_, i) => {
+                      return (
+                        <option key={i} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      );
+                    })}
                   </select>
                 </td>
                 <td className="px-6 py-4 text-end">
@@ -47,7 +69,7 @@ export default function Cart() {
         <tfoot>
           <tr className="border-b dark:border-gray-700">
             <td colSpan={5} className="px-6 py-4 text-end">
-              總金額 NT$ 440
+              總金額 NT$ {state.total || 0}
             </td>
           </tr>
         </tfoot>
